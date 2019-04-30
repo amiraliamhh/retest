@@ -1,29 +1,40 @@
 import React from 'react'
-import { Input, Row, Col, Button } from 'antd'
-import ReCaptcha from 'react-recaptcha'
+import ReactDOM from 'react-dom'
+import { Input, Row, Col, Button, Alert } from 'antd'
+
+import ReCaptcha from './ReCaptcha'
+
+import GithubIcon from './assets/github.png'
 
 class App extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
+            isLoaded: false,
             loading: false,
             key: null,
             show: false,
+            token: null,
         }
+
+        this.ref = React.createRef()
+        this.id = "recaptcha"
 
         this.onLoad = this.onLoad.bind(this)
         this.onVerify = this.onVerify.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleOnClick = this.handleOnClick.bind(this)
+        this.mountReCaptcha = this.mountReCaptcha.bind(this)
+        this.unmountReCaptcha = this.unmountReCaptcha.bind(this)
     }
 
     render() {
-        const { loading, key, show } = this.state
+        const { loading, token } = this.state
 
         return (
             <React.Fragment>
-                <Row>
+                <Row className="mt" >
                     <Col span={16} offset={4} className="text-center" >
                         <h1>Retest - Easily Test Google ReCaptcha</h1>
                     </Col>
@@ -39,7 +50,6 @@ class App extends React.Component {
 
                         <Col span={6} offset={9} className="text-center mt" >
                             <Button 
-                            onClick={this.handleOnClick}
                             loading={loading}
                             type="primary" 
                             htmlType="submit">
@@ -48,31 +58,42 @@ class App extends React.Component {
                         </Col>
                     </form>
 
+                    <div id={this.id} className="mt" />
+
                     {
-                        show
-                        ? <Col span={24} className="mt" >
-                            <Row type="flex" justify="center" >
-                                <ReCaptcha
-                                sitekey={key}
-                                render="explicit"
-                                onloadCallback={this.onLoad}
-                                verifyCallback={this.onVerify}
-                                />
-                            </Row>
+                        token
+                        ? <Col span={8} offset={8} className="mt" >
+                            Token:
+                            <br/>
+                            <Alert className="break-words" message={token} type="info" />
                         </Col>
                         : null
                     }
+
+                    <Col span={2} offset={11} className="mt" >
+                        <Row type="flex" justify="center" >
+                            <a href="https://github.com/amiraliamhh/retest" target="_blank" >
+                                <img src={GithubIcon} className="github" alt="github"/>
+                            </a>
+                        </Row>
+                    </Col>
                 </Row>
             </React.Fragment>
         )
     }
 
     onLoad() {
-        console.log('loaded')
+        this.setState({
+            isLoaded: true,
+            loading: false,
+        })
     }
 
     onVerify(token) {
-        console.log('token: ', token);
+        console.log(token)
+        this.setState({
+            token,
+        })
     }
 
     handleChange(event) {
@@ -83,10 +104,42 @@ class App extends React.Component {
 
     handleOnClick(event) {
         event.preventDefault()
-
+        const { isLoaded, } = this.state
+        
         this.setState({
+            loading: true,
             show: true,
+        }, () => {
+            if (isLoaded) {
+                this.unmountReCaptcha()
+                setTimeout(() => {
+                    this.mountReCaptcha()
+                }, 0);
+                
+            } else {
+                this.mountReCaptcha()
+            }
         })
+    }
+
+    mountReCaptcha() {
+        const { key } = this.state
+        
+        ReactDOM.render(<ReCaptcha
+        sitekey={key}
+        onloadCallback={this.onLoad}
+        verifyCallback={this.onVerify}
+        />, document.getElementById(this.id))
+    }
+
+    unmountReCaptcha() {
+        const node = document.getElementById(this.id)
+
+        try {
+            ReactDOM.unmountComponentAtNode(node)
+        } catch(e) {
+            console.error(e)
+        }
     }
 }
 

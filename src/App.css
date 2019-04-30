@@ -5,3 +5,13 @@
 .mt {
     margin-top: 1em;
 }
+
+.break-words {
+    word-break: break-all;
+}
+
+.github {
+    margin-left: 25%;
+    width: 50%;
+    height: 100%;
+}
