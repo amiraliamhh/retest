@@ -5,8 +5,8 @@
 
 #### use online:
 
-1.  Go to [this address](https://amiraliamhh.github.io/retest.html).
-2.  Enter your **site key** in the input.
+1.  Go to [this address](https://amiraliamhh.github.io/retest).
+2.  Enter your **site key** in the input. (don't forget to add **https://amiraliamhh.github.io** to your *domains* in google recaptcha settings section)
 3.  Press **Show ReCaptcha**.
 4.  Solve ReCaptcha.
 5.  Now you can see your token.
