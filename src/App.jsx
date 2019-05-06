@@ -37,6 +37,7 @@ class App extends React.Component {
                 <Row className="mt" >
                     <Col span={16} offset={4} className="text-center" >
                         <h1>Retest - Easily Test Google ReCaptcha</h1>
+                        <h4>Make sure {"<"} <i>{ window.location.hostname }</i> {">"} is in your recaptcha domains.</h4>
                     </Col>
 
                     <form onSubmit={this.handleOnClick} >
